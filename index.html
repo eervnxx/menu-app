@@ -242,8 +242,8 @@
 
 <script>
 // ==================== CONFIG ====================
-const GITHUB_TOKEN = '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';
-const REPO_OWNER = 'YOUR_USERNAME'; // غير هذا لاسم المستخدم الخاص بك
+const GITHUB_TOKEN = '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';
+const REPO_OWNER = 'Murtada-Abbas';
 const REPO_NAME = 'menu-app';
 const BRANCH = 'main';
 const BASE_PATH = 'data';
@@ -272,7 +272,10 @@ async function githubGetFile(filePath) {
         }
     });
     if (response.status === 404) return null;
-    if (!response.ok) throw new Error(`GitHub API error: ${response.status}`);
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`GitHub API error: ${response.status} - ${errorText}`);
+    }
     const data = await response.json();
     const content = atob(data.content);
     return JSON.parse(content);
@@ -313,7 +316,10 @@ async function githubSaveFile(filePath, content) {
         body: JSON.stringify(body)
     });
 
-    if (!response.ok) throw new Error(`GitHub API error: ${response.status}`);
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`GitHub API error: ${response.status} - ${errorText}`);
+    }
     return await response.json();
 }
 
@@ -405,6 +411,7 @@ async function handleLogin() {
         toast('✅ دخول الأدمن');
     } catch (err) {
         document.getElementById('loginError').style.display = 'block';
+        console.error('Login error:', err);
     }
 }
 
@@ -535,7 +542,7 @@ async function loadRestaurant() {
         updateCatsBar();
     } catch (err) {
         console.error('Error loading restaurant:', err);
-        toast('❌ فشل تحميل المطعم');
+        toast('❌ فشل تحميل المطعم: ' + err.message);
     }
 }
 
@@ -694,7 +701,8 @@ async function loadAllRestaurants() {
             </div>
         `).join('');
     } catch (err) {
-        document.getElementById('restaurantsList').innerHTML = '<p style="color:red;padding:20px;">❌ خطأ في تحميل المطاعم</p>';
+        document.getElementById('restaurantsList').innerHTML = '<p style="color:red;padding:20px;">❌ خطأ في تحميل المطاعم: ' + err.message + '</p>';
+        console.error('Load restaurants error:', err);
     }
 }
 
