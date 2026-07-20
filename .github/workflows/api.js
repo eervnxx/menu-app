@@ -1,8 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
 
 const app = express();
 const PORT = 3000;
@@ -10,16 +8,15 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
-// GitHub config - استخدام MY_GITHUB_TOKEN بدلاً من GITHUB_TOKEN
 const GITHUB_TOKEN = process.env.MY_GITHUB_TOKEN;
 const REPO_OWNER = process.env.GITHUB_REPOSITORY ? process.env.GITHUB_REPOSITORY.split('/')[0] : 'YOUR_USERNAME';
 const REPO_NAME = process.env.GITHUB_REPOSITORY ? process.env.GITHUB_REPOSITORY.split('/')[1] : 'YOUR_REPO';
 const BRANCH = 'main';
 const BASE_PATH = 'data';
 
-console.log(`Repo: ${REPO_OWNER}/${REPO_NAME}`);
+console.log(`🔑 Token exists: ${GITHUB_TOKEN ? 'Yes' : 'No'}`);
+console.log(`📁 Repo: ${REPO_OWNER}/${REPO_NAME}`);
 
-// Helper functions
 async function getFile(filePath) {
     try {
         const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${filePath}`;
@@ -33,6 +30,7 @@ async function getFile(filePath) {
         return JSON.parse(content);
     } catch (error) {
         if (error.response && error.response.status === 404) return null;
+        console.error('Get file error:', error.message);
         throw error;
     }
 }
@@ -70,7 +68,6 @@ async function saveFile(filePath, content) {
 
 async function deleteFile(filePath) {
     const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${filePath}`;
-    
     try {
         const response = await axios.get(url, {
             headers: {
@@ -117,6 +114,8 @@ app.get('/api/restaurants/:id', async (req, res) => {
 app.post('/api/restaurants', async (req, res) => {
     try {
         const body = req.body;
+        console.log('📝 Creating restaurant:', body.name);
+        
         const restaurants = await getFile(`${BASE_PATH}/index.json`) || [];
         const newId = restaurants.length > 0 ? Math.max(...restaurants.map(r => r.id)) + 1 : 1;
         const newRestaurant = { ...body, id: newId, created_at: new Date().toISOString() };
@@ -127,6 +126,7 @@ app.post('/api/restaurants', async (req, res) => {
         
         res.json({ success: true, id: newId });
     } catch (error) {
+        console.error('❌ Error creating restaurant:', error.message);
         res.status(500).json({ error: error.message });
     }
 });
@@ -135,6 +135,8 @@ app.put('/api/restaurants/:id', async (req, res) => {
     try {
         const id = parseInt(req.params.id);
         const body = req.body;
+        console.log('📝 Updating restaurant:', id);
+        
         await saveFile(`${BASE_PATH}/restaurant_${id}.json`, { ...body, id, updated_at: new Date().toISOString() });
         
         const restaurants = await getFile(`${BASE_PATH}/index.json`) || [];
@@ -146,6 +148,7 @@ app.put('/api/restaurants/:id', async (req, res) => {
         
         res.json({ success: true });
     } catch (error) {
+        console.error('❌ Error updating restaurant:', error.message);
         res.status(500).json({ error: error.message });
     }
 });
@@ -175,14 +178,12 @@ app.post('/api/upload', async (req, res) => {
         const base64Data = image.split(',')[1] || image;
         const buffer = Buffer.from(base64Data, 'base64');
         
+        const FormData = require('form-data');
         const formData = new FormData();
-        const blob = new Blob([buffer], { type: 'image/jpeg' });
-        formData.append('image', blob, 'image.jpg');
+        formData.append('image', buffer, { filename: 'image.jpg' });
         
         const response = await axios.post('https://api.imgbb.com/1/upload?key=da3f49b21529668b440b1a7ac820fecf', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
+            headers: formData.getHeaders()
         });
         
         if (response.data.success) {
@@ -191,11 +192,11 @@ app.post('/api/upload', async (req, res) => {
             res.status(500).json({ error: 'Upload failed' });
         }
     } catch (error) {
+        console.error('❌ Upload error:', error.message);
         res.status(500).json({ error: error.message });
     }
 });
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 API Server running on port ${PORT}`);
-    console.log(`📁 Repo: ${REPO_OWNER}/${REPO_NAME}`);
 });
