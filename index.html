@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title id="pageTitle"></title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        :root {
+            --bg: #0a0a14;
+            --surface: rgba(255,255,255,0.04);
+            --surface2: rgba(255,255,255,0.02);
+            --border: rgba(255,255,255,0.06);
+            --text: #ffffff;
+            --text2: #8a8aa0;
+            --primary: #c44569;
+            --primary-soft: #e66767;
+            --accent: #cf6a87;
+            --accent-soft: #f1a9a0;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --gradient1: linear-gradient(135deg, #c44569, #e66767, #f1a9a0);
+            --gradient-fire: linear-gradient(180deg, #f1a9a0 0%, #e66767 35%, #c44569 65%, #a33d5a 100%);
+            --font-ar: 'Cairo', sans-serif;
+            --font-en: 'Poppins', sans-serif;
+        }
+        
+        .light-mode {
+            --bg: #fafafa;
+            --surface: rgba(0,0,0,0.02);
+            --surface2: rgba(0,0,0,0.01);
+            --border: rgba(0,0,0,0.06);
+            --text: #2d2d3a;
+            --text2: #8e8ea0;
+            --primary: #c44569;
+            --primary-soft: #e66767;
+            --accent: #cf6a87;
+            --accent-soft: #e66767;
+        }
+        
+        body {
+            font-family: var(--font-ar);
+            background: var(--bg);
+            color: var(--text);
+            padding: 12px;
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        button, input, select, textarea, .btn, .btn-full, .btn-xs, .btn-icon, .cat-bar-btn, .form-input {
+            font-family: var(--font-ar) !important;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 12px; border-bottom: 1px solid var(--border); }
+        .brand { display: flex; align-items: center; gap: 10px; }
+        .brand-auto-logo { width: 44px; height: 44px; border-radius: 12px; background: var(--gradient-fire); display: none; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; color: #fff; font-family: var(--font-en); box-shadow: 0 4px 15px rgba(196, 69, 105, 0.3); flex-shrink: 0; }
+        .brand-logo-img { width: 44px; height: 44px; border-radius: 12px; object-fit: cover; display: none; }
+        .brand-text-en { font-size: 26px; font-weight: 900; font-family: var(--font-en); background: var(--gradient1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.5px; }
+        .brand-sub { font-size: 10px; color: var(--accent-soft); font-weight: 600; letter-spacing: 2px; text-transform: uppercase; font-family: var(--font-en); display: block; }
+        .header-actions { display: flex; gap: 8px; }
+        .btn-icon { width: 44px; height: 44px; border-radius: 14px; background: var(--surface); border: 1px solid var(--border); color: var(--text2); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .btn-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .btn-icon:hover { border-color: var(--accent-soft); color: var(--accent); }
+        .btn-icon:active { transform: scale(0.92); }
+
+        .hero { text-align: center; padding: 20px 10px 8px; }
+        .hero-badge { display: inline-block; padding: 4px 14px; border-radius: 50px; background: var(--surface); border: 1px solid var(--border); font-size: 10px; font-weight: 600; color: var(--accent-soft); margin-bottom: 8px; letter-spacing: 1px; }
+        .hero h1 { font-size: clamp(32px, 8vw, 52px); font-weight: 900; line-height: 1.3; font-family: var(--font-ar); margin-bottom: 10px; word-break: break-word; padding: 6px 8px 12px 8px; }
+        .hero h1 .menu-text { background: var(--gradient-fire); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: inline-block; filter: drop-shadow(0 0 12px rgba(207, 106, 135, 0.15)); animation: softGlow 3s ease-in-out infinite; }
+        @keyframes softGlow { 0%, 100% { filter: drop-shadow(0 0 8px rgba(207, 106, 135, 0.1)); } 50% { filter: drop-shadow(0 0 15px rgba(207, 106, 135, 0.2)); } }
+        .hero p { font-size: clamp(14px, 3vw, 18px); color: var(--primary-soft); font-weight: 500; max-width: 450px; margin: 8px auto 0; }
+
+        .search-wrapper { margin: 10px 0 8px; position: relative; }
+        .search { width: 100%; padding: 12px 16px 12px 44px; border-radius: 50px; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 14px; font-family: inherit; outline: none; }
+        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text2); font-size: 16px; opacity: 0.5; }
+
+        .cats-bar-wrapper { overflow-x: auto; scrollbar-width: none; margin: 6px 0 12px; }
+        .cats-bar-wrapper::-webkit-scrollbar { display: none; }
+        .cats-bar { display: flex; gap: 8px; flex-wrap: nowrap; }
+        .cat-bar-btn { padding: 6px 16px; border-radius: 50px; background: var(--surface); border: 1px solid var(--border); color: var(--text2); font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; min-height: 36px; flex-shrink: 0; }
+        .cat-bar-btn:hover { border-color: var(--accent-soft); color: var(--accent-soft); }
+        .cat-bar-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .back-btn { display: none; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); color: var(--accent-soft); padding: 8px 16px; border-radius: 50px; cursor: pointer; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+        .back-btn.show { display: inline-flex; }
+
+        .section-title { font-size: 18px; font-weight: 700; margin: 8px 0 14px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+        .count-badge { font-size: 12px; font-weight: 600; color: var(--accent-soft); background: rgba(207, 106, 135, 0.08); padding: 2px 12px; border-radius: 50px; }
+        .category-title { font-size: 20px; font-weight: 700; margin: 4px 0 12px; color: var(--text); }
+
+        .cats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .cat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: 0.3s; animation: fadeUp 0.3s ease forwards; opacity: 0; }
+        .cat-card:hover { border-color: rgba(207, 106, 135, 0.2); transform: translateY(-2px); }
+        .cat-card:active { transform: scale(0.96); }
+        .cat-card .cat-img { width: 100%; height: 120px; object-fit: cover; background: var(--surface2); }
+        .cat-card .cat-img-placeholder { width: 100%; height: 120px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 48px; color: var(--text2); opacity: 0.3; }
+        .cat-card .cat-info { padding: 12px 14px; }
+        .cat-card .cat-name { font-size: 16px; font-weight: 700; }
+        .cat-card .cat-count { font-size: 12px; color: var(--text2); }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: 0.2s; animation: fadeUp 0.3s ease forwards; opacity: 0; }
+        .card:hover { border-color: rgba(207, 106, 135, 0.15); }
+        .card.off { opacity: 0.4; }
+        .card-img-wrap { width: 100%; height: 140px; overflow: hidden; background: var(--surface2); position: relative; }
+        .card img { width: 100%; height: 100%; object-fit: cover; }
+        .card-badge { position: absolute; top: 8px; right: 8px; padding: 2px 10px; border-radius: 50px; font-size: 9px; font-weight: 700; background: rgba(0,0,0,0.4); color: #fff; }
+        .badge-on { background: rgba(196, 69, 105, 0.25); color: var(--accent-soft); }
+        .badge-off { background: rgba(180, 180, 180, 0.2); color: #999; }
+        .card-body { padding: 10px; }
+        .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+        .card p { font-size: 11px; color: var(--text2); margin-bottom: 6px; }
+        .price { font-size: 18px; font-weight: 800; color: var(--accent-soft); }
+
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; padding: 16px; }
+        .modal-overlay.show { display: flex; }
+        .modal-box { background: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 24px 20px; width: 100%; max-width: 450px; max-height: 90vh; overflow-y: auto; animation: popIn 0.3s ease; }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-box h3 { text-align: center; margin-bottom: 16px; font-size: 18px; }
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; font-size: 10px; color: var(--text2); font-weight: 600; margin-bottom: 4px; }
+        .form-input { width: 100%; padding: 10px 14px; border-radius: 10px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-size: 14px; font-family: inherit; outline: none; min-height: 42px; }
+        .form-input:focus { border-color: var(--accent-soft); }
+        textarea.form-input { min-height: 60px; resize: vertical; }
+        select.form-input { cursor: pointer; }
+
+        .btn { padding: 10px 20px; border-radius: 10px; border: none; font-weight: 700; font-size: 14px; cursor: pointer; min-height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn:hover { opacity: 0.85; }
+        .btn-full { width: 100%; padding: 12px; border-radius: 12px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--accent); color: white; }
+        .btn-danger { background: #e66767; color: white; }
+        .btn-outline { background: var(--surface); color: var(--text2); border: 1px solid var(--border); }
+        .btn-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+        .admin-panel { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 999; overflow-y: auto; padding: 12px; }
+        .admin-panel.show { display: block; }
+        .admin-wrap { max-width: 800px; margin: 0 auto; }
+        .admin-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--surface); border-radius: 10px; margin-bottom: 12px; border: 1px solid var(--border); flex-wrap: wrap; gap: 8px; }
+        .admin-bar h3 { font-size: 15px; }
+        .admin-bar .admin-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .admin-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+        .admin-card h4 { font-size: 14px; margin-bottom: 12px; }
+
+        .restaurant-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border); gap: 8px; }
+        .restaurant-info { flex: 1; }
+        .restaurant-info strong { font-size: 14px; }
+        .restaurant-info span { font-size: 10px; color: var(--text2); display: block; }
+        .restaurant-actions { display: flex; gap: 4px; }
+
+        .btn-xs { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--text2); }
+        .btn-xs:hover { border-color: var(--accent-soft); color: var(--accent-soft); }
+        .btn-xs.edit { color: var(--accent-soft); }
+        .btn-xs.delete { color: #e66767; }
+        .btn-xs.qr { color: #10b981; }
+        .btn-xs.toggle { color: #f59e0b; }
+
+        .dish-admin-item { display: grid; grid-template-columns: 40px 1fr 60px 70px; gap: 6px; padding: 8px 10px; align-items: center; border-bottom: 1px solid var(--border); }
+        .dish-admin-item img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; background: var(--surface2); }
+        .dish-admin-info h4 { font-size: 12px; font-weight: 600; }
+        .dish-admin-info span { font-size: 9px; color: var(--text2); }
+        .dish-admin-price { font-size: 12px; font-weight: 700; color: var(--accent-soft); }
+        .dish-admin-actions { display: flex; gap: 3px; }
+
+        .disabled-page { display: none; text-align: center; padding: 80px 20px; max-width: 500px; margin: 0 auto; animation: fadeUp 0.5s ease; }
+        .disabled-icon svg { width: 100px; height: 100px; animation: lockPulse 2s ease-in-out infinite; }
+        @keyframes lockPulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.08); opacity: 1; } }
+        .disabled-page h2 { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
+        .disabled-page p { color: var(--text2); font-size: 14px; line-height: 1.6; }
+
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface); border: 1px solid rgba(207, 106, 135, 0.2); padding: 10px 20px; border-radius: 50px; z-index: 2000; font-size: 13px; font-weight: 600; color: var(--text); transition: transform 0.4s ease; pointer-events: none; max-width: 90%; text-align: center; }
+        .toast.on { transform: translateX(-50%) translateY(0); }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .empty { text-align: center; padding: 40px 20px; color: var(--text2); grid-column: 1 / -1; }
+        .empty-icon { font-size: 40px; margin-bottom: 8px; }
+        .err { color: #e66767; font-size: 13px; display: block; text-align: center; margin-top: 8px; }
+
+        @media (max-width: 400px) {
+            .grid { gap: 8px; } .card-img-wrap { height: 110px; } .card h3 { font-size: 13px; } .price { font-size: 15px; }
+            .brand-text-en { font-size: 20px; } .btn-icon { width: 38px; height: 38px; } .btn-icon svg { width: 18px; height: 18px; }
+            .cat-card .cat-img { height: 90px; } .cats-grid { gap: 8px; }
+        }
+        @media (min-width: 600px) { .cats-grid { grid-template-columns: 1fr 1fr 1fr; } .grid { grid-template-columns: 1fr 1fr 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="container" id="mainContainer">
+    <header class="header">
+        <div class="brand">
+            <div class="brand-auto-logo" id="brandAutoLogo"></div>
+            <img class="brand-logo-img" id="brandLogoImg" src="" alt="Logo">
+            <div id="brandTextWrapper">
+                <span class="brand-text-en" id="brandText">MENU</span>
+                <span class="brand-sub" id="brandSub"></span>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn-icon" onclick="toggleDarkMode()"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
+            <button class="btn-icon" onclick="openLoginModal()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
+        </div>
+    </header>
+
+    <div class="hero">
+        <div class="hero-badge">✦ Premium Quality</div>
+        <h1><span class="menu-text" id="heroTitle"></span></h1>
+        <p id="heroDesc"></p>
+    </div>
+
+    <button class="back-btn" id="backBtn" onclick="goBackToCategories()">↩️ قائمة الأصناف</button>
+    <div class="search-wrapper"><span class="search-icon">🔍</span><input type="text" class="search" id="searchInput" placeholder="ابحث عن وجبتك المفضلة..." oninput="handleSearch()"></div>
+    <div class="cats-bar-wrapper"><div class="cats-bar" id="catsBar"></div></div>
+    <div class="section-title"><span>📋 قائمة الأصناف</span><span class="count-badge" id="totalCount"></span></div>
+    <div class="category-title" id="selectedCategoryName" style="display:none;"></div>
+    <div id="categoriesContainer"><div class="cats-grid" id="catsGrid"></div></div>
+    <div id="itemsContainer" style="display:none;"><div class="grid" id="menuGrid"></div></div>
+</div>
+
+<div class="disabled-page" id="disabledPage">
+    <div class="disabled-icon"><svg viewBox="0 0 100 100" width="100" height="100"><rect x="25" y="45" width="50" height="40" rx="6" fill="none" stroke="#e66767" stroke-width="2.5"/><path d="M35 45V30a15 15 0 0 1 30 0v15" fill="none" stroke="#e66767" stroke-width="2.5"/><circle cx="50" cy="75" r="3.5" fill="#e66767"/><line x1="50" y1="58" x2="50" y2="69" stroke="#e66767" stroke-width="3"/></svg></div>
+    <h2>المطعم غير متاح حالياً</h2>
+    <p>عذراً، هذا المطعم موقف مؤقتاً.<br>يرجى التواصل مع الإدارة للحصول على مزيد من المعلومات.</p>
+</div>
+
+<div class="modal-overlay" id="loginModal"><div class="modal-box"><h3>🔐 دخول المشرف</h3><div class="form-group"><label>البريد أو المعرف</label><input type="text" class="form-input" id="loginEmail" autocomplete="off"></div><div class="form-group"><label>كلمة المرور</label><input type="password" class="form-input" id="loginPassword"></div><p class="err" id="loginError" style="display:none;">❌ بيانات الدخول غير صحيحة</p><button class="btn btn-full btn-primary" onclick="handleLogin()">🔒 دخول</button><button class="btn btn-full btn-outline" onclick="closeLoginModal()" style="margin-top:6px;">إلغاء</button></div></div>
+
+<div class="admin-panel" id="devPanel"><div class="admin-wrap"><div class="admin-bar"><h3>👑 لوحة المطور الرئيسي</h3><div class="admin-actions"><button class="btn btn-primary" onclick="openRestaurantModal()">➕ مطعم جديد</button><button class="btn btn-danger" onclick="forceLogout()">🚪 تسجيل خروج</button><button class="btn btn-outline" onclick="closeAdmin()">✖ إغلاق</button></div></div><div class="admin-card"><h4>🏪 جميع المطاعم</h4><div id="restaurantsList"></div></div></div></div>
+
+<div class="modal-overlay" id="restaurantModal"><div class="modal-box"><h3 id="restaurantModalTitle">🏪 إضافة مطعم جديد</h3><input type="hidden" id="restaurantId"><div class="form-group"><label>اسم المطعم *</label><input type="text" class="form-input" id="restName"></div><div class="form-group"><label>نوع اللوجو</label><select class="form-input" id="restLogoType" onchange="toggleLogoFields()"><option value="text">نص فقط</option><option value="auto">لوجو تلقائي (حروف)</option><option value="image">صورة</option></select></div><div id="logoTextField"><div class="form-group"><label>نص اللوجو</label><input type="text" class="form-input" id="restLogoText" placeholder="مثال: MENU"></div></div><div id="logoAutoField" style="display:none;"><div class="form-group"><label>حروف اللوجو (1-4)</label><input type="text" class="form-input" id="restAutoLogoText" maxlength="4" oninput="this.value=this.value.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g,'').slice(0,4);document.getElementById('autoLogoPreview').textContent=this.value||'?'"></div><div style="text-align:center;margin:8px 0;"><div style="display:inline-block;width:50px;height:50px;border-radius:14px;background:var(--gradient-fire);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;" id="autoLogoPreview">?</div></div></div><div id="logoImageField" style="display:none;"><div class="form-group"><label>صورة اللوجو</label><input type="file" class="form-input" id="restLogoFile" accept="image/*"></div></div><div class="form-group"><label>إظهار اسم المطعم في الهيدر</label><select class="form-input" id="restShowNameInHeader"><option value="true">✅ نعم</option><option value="false">❌ لا</option></select></div><div class="form-group"><label>الوصف</label><textarea class="form-input" id="restDesc"></textarea></div><div class="form-group"><label>إيميل الأدمن</label><input type="text" class="form-input" id="restAdminEmail"></div><div class="form-group"><label>كلمة مرور الأدمن</label><input type="password" class="form-input" id="restAdminPassword"></div><div id="restaurantMsg"></div><div class="btn-row"><button class="btn btn-primary btn-full" onclick="saveRestaurant()">💾 حفظ</button><button class="btn btn-outline btn-full" onclick="closeRestaurantModal()">إلغاء</button></div></div></div>
+
+<div class="modal-overlay" id="qrModal"><div class="modal-box" style="text-align:center;"><h3>📱 QR Code</h3><div id="qrCodeDisplay" style="display:inline-block;background:white;padding:15px;border-radius:12px;"></div><p style="margin-top:10px;color:var(--text2);font-size:12px;direction:ltr;" id="qrUrlDisplay"></p><button class="btn btn-primary btn-full" onclick="downloadQrFromModal()" style="margin-top:10px;">📥 تحميل</button><button class="btn btn-outline btn-full" onclick="closeQrModal()" style="margin-top:6px;">إغلاق</button></div></div>
+
+<div class="admin-panel" id="adminPanel"><div class="admin-wrap"><div class="admin-bar"><h3>⚙️ لوحة تحكم <span id="adminRestaurantName"></span></h3><div class="admin-actions"><button class="btn btn-primary" onclick="openDishModal()">➕ طبق جديد</button><button class="btn btn-success" onclick="openCatModal()">📂 تصنيف جديد</button><button class="btn btn-danger" onclick="forceLogout()">🚪 تسجيل خروج</button><button class="btn btn-outline" onclick="closeAdmin()">✖ إغلاق</button></div></div><div class="cats-bar-wrapper"><div class="cats-bar" id="adminCatsBar"></div></div><div class="admin-card"><h4>🍽️ جميع الأطباق</h4><div id="adminDishesList"></div></div></div></div>
+
+<div class="modal-overlay" id="dishModal"><div class="modal-box"><h3>🍽️ إضافة طبق</h3><input type="hidden" id="dishId"><div class="form-group"><label>اسم الطبق *</label><input type="text" class="form-input" id="dishName"></div><div class="form-group"><label>السعر *</label><input type="number" class="form-input" id="dishPrice"></div><div class="form-group"><label>التصنيف</label><select class="form-input" id="dishCategory"></select></div><div class="form-group"><label>الوصف</label><textarea class="form-input" id="dishDesc"></textarea></div><div class="form-group"><label>الصورة</label><input type="file" class="form-input" id="dishImage" accept="image/*"></div><div class="form-group"><label>الحالة</label><select class="form-input" id="dishAvailable"><option value="true">✅ متوفر</option><option value="false">❌ غير متوفر</option></select></div><div id="dishMsg"></div><div class="btn-row"><button class="btn btn-primary btn-full" onclick="saveDish()">💾 حفظ</button><button class="btn btn-outline btn-full" onclick="closeDishModal()">إلغاء</button></div></div></div>
+
+<div class="modal-overlay" id="catModal"><div class="modal-box"><h3>📂 إضافة تصنيف</h3><div class="form-group"><label>اسم التصنيف *</label><input type="text" class="form-input" id="catName"></div><div id="catMsg"></div><div class="btn-row"><button class="btn btn-primary btn-full" onclick="saveCategory()">💾 حفظ</button><button class="btn btn-outline btn-full" onclick="closeCatModal()">إلغاء</button></div></div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== CONFIG ====================
+const API_BASE = window.location.origin + '/api';
+const DEV_EMAIL = "55";
+const DEV_PASSWORD = "66";
+const BASE_URL = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '');
+const CACHE_PREFIX = 'v_cache_';
+
+// ==================== CACHE HELPERS ====================
+function getCache(key) { try { const r = sessionStorage.getItem(CACHE_PREFIX + key); return r ? JSON.parse(r) : null; } catch(e) { return null; } }
+function setCache(key, data) { try { sessionStorage.setItem(CACHE_PREFIX + key, JSON.stringify(data)); } catch(e) {} }
+function delCache(key) { sessionStorage.removeItem(CACHE_PREFIX + key); }
+
+// ==================== STATE ====================
+let currentRestaurantId = null, currentRestaurantData = null, categories = [], dishes = [];
+let isLoggedIn = false, loginType = null, selectedCategory = null, isDarkMode = true;
+const urlRestaurantId = new URLSearchParams(location.search).get("id");
+
+// ==================== API HELPERS ====================
+async function apiCall(endpoint, options = {}) {
+    const url = `${API_BASE}${endpoint}`;
+    const config = {
+        headers: { 'Content-Type': 'application/json' },
+        ...options
+    };
+    if (options.body && typeof options.body === 'object' && !(options.body instanceof FormData)) {
+        config.body = JSON.stringify(options.body);
+    }
+    const response = await fetch(url, config);
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(error.error || 'API error');
+    }
+    return response.json();
+}
+
+async function uploadImage(file) {
+    const formData = new FormData();
+    formData.append('image', file);
+    const response = await fetch(`${API_BASE}/upload`, {
+        method: 'POST',
+        body: formData
+    });
+    const data = await response.json();
+    if (data.error) throw new Error(data.error);
+    return data.url;
+}
+
+// ==================== TOAST ====================
+function toast(msg) { const el = document.getElementById('toast'); el.textContent = msg; el.classList.add('on'); clearTimeout(el._timer); el._timer = setTimeout(() => el.classList.remove('on'), 3000); }
+
+// ==================== DARK MODE ====================
+function toggleDarkMode() { isDarkMode = !isDarkMode; document.body.classList.toggle('light-mode', !isDarkMode); localStorage.setItem('darkMode', isDarkMode ? '1' : '0'); }
+if (localStorage.getItem('darkMode') === '0') { isDarkMode = false; document.body.classList.add('light-mode'); }
+
+// ==================== SESSION ====================
+function checkSession() { const saved = localStorage.getItem('menuSession'); if (!saved) return false; try { const s = JSON.parse(saved); if (Date.now() > s.expiry) { localStorage.removeItem('menuSession'); return false; } isLoggedIn = true; loginType = s.type; currentRestaurantId = s.restaurantId ? parseInt(s.restaurantId) : null; return true; } catch (e) { return false; } }
+function saveSession(type, restaurantId) { localStorage.setItem('menuSession', JSON.stringify({ type, restaurantId, expiry: Date.now() + (24 * 3600 * 1000) })); isLoggedIn = true; loginType = type; currentRestaurantId = restaurantId ? parseInt(restaurantId) : null; }
+function forceLogout() { localStorage.removeItem('menuSession'); isLoggedIn = false; loginType = null; currentRestaurantId = null; closeAdmin(); toast('👋 تم تسجيل الخروج'); }
+function closeAdmin() { document.getElementById('devPanel').classList.remove('show'); document.getElementById('adminPanel').classList.remove('show'); document.body.style.overflow = ''; }
+
+// ==================== LOGIN ====================
+function openLoginModal() { if (checkSession()) { if (loginType === 'dev') { document.getElementById('devPanel').classList.add('show'); document.body.style.overflow = 'hidden'; loadAllRestaurants(); } else if (loginType === 'admin') { document.getElementById('adminPanel').classList.add('show'); document.body.style.overflow = 'hidden'; loadAdminData(currentRestaurantId); } return; } document.getElementById('loginModal').classList.add('show'); document.getElementById('loginError').style.display = 'none'; }
+function closeLoginModal() { document.getElementById('loginModal').classList.remove('show'); }
+
+async function handleLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    
+    if (email === DEV_EMAIL && password === DEV_PASSWORD) {
+        saveSession('dev', null);
+        closeLoginModal();
+        document.getElementById('devPanel').classList.add('show');
+        document.body.style.overflow = 'hidden';
+        await loadAllRestaurants();
+        toast('👑 دخول المطور');
+        return;
+    }
+    
+    try {
+        const restaurants = await apiCall('/restaurants');
+        const restaurant = restaurants.find(r => r.admin_email === email && r.admin_password === password);
+        if (!restaurant) {
+            document.getElementById('loginError').style.display = 'block';
+            return;
+        }
+        saveSession('admin', restaurant.id);
+        currentRestaurantId = restaurant.id;
+        closeLoginModal();
+        document.getElementById('adminPanel').classList.add('show');
+        document.body.style.overflow = 'hidden';
+        document.getElementById('adminRestaurantName').textContent = restaurant.name;
+        await loadAdminData(restaurant.id);
+        toast('✅ دخول الأدمن');
+    } catch (err) {
+        document.getElementById('loginError').style.display = 'block';
+    }
+}
+
+document.getElementById('loginPassword').addEventListener('keypress', function(e) { if (e.key === 'Enter') handleLogin(); });
+
+// ==================== RESTAURANT MODAL ====================
+function openRestaurantModal(restId = null) {
+    document.getElementById('restaurantId').value = restId || '';
+    document.getElementById('restName').value = '';
+    document.getElementById('restLogoText').value = '';
+    document.getElementById('restAutoLogoText').value = '';
+    document.getElementById('restLogoFile').value = '';
+    document.getElementById('restLogoType').value = 'text';
+    document.getElementById('restShowNameInHeader').value = 'true';
+    document.getElementById('restDesc').value = '';
+    document.getElementById('restAdminEmail').value = '';
+    document.getElementById('restAdminPassword').value = '';
+    document.getElementById('logoTextField').style.display = 'block';
+    document.getElementById('logoAutoField').style.display = 'none';
+    document.getElementById('logoImageField').style.display = 'none';
+    document.getElementById('restaurantMsg').innerHTML = '';
+    document.getElementById('restaurantModalTitle').textContent = restId ? '✏️ تعديل مطعم' : '🏪 إضافة مطعم جديد';
+    document.getElementById('autoLogoPreview').textContent = '?';
+    if (restId) loadRestaurantForEdit(restId);
+    document.getElementById('restaurantModal').classList.add('show');
+}
+function closeRestaurantModal() { document.getElementById('restaurantModal').classList.remove('show'); }
+function toggleLogoFields() {
+    const t = document.getElementById('restLogoType').value;
+    document.getElementById('logoTextField').style.display = t === 'text' ? 'block' : 'none';
+    document.getElementById('logoAutoField').style.display = t === 'auto' ? 'block' : 'none';
+    document.getElementById('logoImageField').style.display = t === 'image' ? 'block' : 'none';
+}
+
+// ==================== QR CODE ====================
+function openQrModal(restId, restName) {
+    const url = `${BASE_URL}?id=${restId}`;
+    document.getElementById('qrUrlDisplay').textContent = url;
+    document.getElementById('qrCodeDisplay').innerHTML = '';
+    new QRCode(document.getElementById('qrCodeDisplay'), { text: url, width: 180, height: 180, colorDark: '#000', colorLight: '#fff' });
+    document.getElementById('qrModal').classList.add('show');
+}
+function closeQrModal() { document.getElementById('qrModal').classList.remove('show'); }
+function downloadQrFromModal() {
+    const canvas = document.querySelector('#qrCodeDisplay canvas');
+    if (canvas) { const a = document.createElement('a'); a.download = 'qr-restaurant.png'; a.href = canvas.toDataURL(); a.click(); }
+}
+
+// ==================== DISH MODAL ====================
+function openDishModal(dishId = null) {
+    document.getElementById('dishId').value = dishId || '';
+    document.getElementById('dishName').value = '';
+    document.getElementById('dishPrice').value = '';
+    document.getElementById('dishDesc').value = '';
+    document.getElementById('dishImage').value = '';
+    document.getElementById('dishAvailable').value = 'true';
+    document.getElementById('dishMsg').innerHTML = '';
+    document.getElementById('dishCategory').innerHTML = '<option value="">بدون تصنيف</option>' + categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    if (dishId) {
+        const dish = dishes.find(d => d.id == dishId);
+        if (dish) {
+            document.getElementById('dishName').value = dish.name;
+            document.getElementById('dishPrice').value = dish.price;
+            document.getElementById('dishDesc').value = dish.description || '';
+            document.getElementById('dishCategory').value = dish.category_id || '';
+            document.getElementById('dishAvailable').value = dish.is_available ? 'true' : 'false';
+        }
+    }
+    document.getElementById('dishModal').classList.add('show');
+}
+function closeDishModal() { document.getElementById('dishModal').classList.remove('show'); }
+
+// ==================== CAT MODAL ====================
+function openCatModal() { document.getElementById('catName').value = ''; document.getElementById('catMsg').innerHTML = ''; document.getElementById('catModal').classList.add('show'); }
+function closeCatModal() { document.getElementById('catModal').classList.remove('show'); }
+
+// ==================== MODAL CLOSE ON BACKDROP ====================
+['loginModal','restaurantModal','qrModal','dishModal','catModal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', function(e) {
+        if (e.target === this) {
+            if (id === 'loginModal') closeLoginModal();
+            else if (id === 'restaurantModal') closeRestaurantModal();
+            else if (id === 'qrModal') closeQrModal();
+            else if (id === 'dishModal') closeDishModal();
+            else if (id === 'catModal') closeCatModal();
+        }
+    });
+});
+
+// ==================== PUBLIC VIEW ====================
+async function loadRestaurant() {
+    let rid = urlRestaurantId ? parseInt(urlRestaurantId) : null;
+    if (!rid) { document.getElementById('mainContainer').style.display = 'block'; return; }
+    currentRestaurantId = rid;
+
+    const ck = 'menu_' + rid;
+    const cached = getCache(ck);
+    if (cached) {
+        console.log('⚡ Cache HIT');
+        categories = cached.categories || []; dishes = cached.dishes || [];
+        if (cached.restaurant) { currentRestaurantData = cached.restaurant; updatePublicUI(cached.restaurant); }
+        renderCategories(); updateCatsBar();
+        return;
+    }
+
+    console.log('🔄 Fetching from GitHub...');
+    try {
+        const restaurant = await apiCall(`/restaurants/${rid}`);
+        if (!restaurant.is_active) {
+            document.getElementById('mainContainer').style.display = 'none';
+            document.getElementById('disabledPage').style.display = 'block';
+            return;
+        }
+        document.getElementById('mainContainer').style.display = 'block';
+        document.getElementById('disabledPage').style.display = 'none';
+        currentRestaurantData = restaurant;
+        updatePublicUI(restaurant);
+        
+        categories = restaurant.categories || [];
+        dishes = restaurant.dishes || [];
+        
+        setCache(ck, { restaurant, categories, dishes });
+        renderCategories();
+        updateCatsBar();
+    } catch (err) {
+        console.error('Error loading restaurant:', err);
+        toast('❌ فشل تحميل المطعم');
+    }
+}
+
+function updatePublicUI(rest) {
+    document.title = rest.name || '';
+    document.getElementById('brandText').textContent = 'MENU';
+    document.getElementById('brandAutoLogo').style.display = 'none';
+    document.getElementById('brandLogoImg').style.display = 'none';
+    document.getElementById('brandTextWrapper').style.display = 'block';
+    if (rest.logo_type === 'auto' && rest.auto_logo_text) {
+        document.getElementById('brandAutoLogo').textContent = rest.auto_logo_text.slice(0,4);
+        document.getElementById('brandAutoLogo').style.display = 'flex';
+    } else if (rest.logo_type === 'image' && rest.logo_image) {
+        const img = document.getElementById('brandLogoImg');
+        img.src = rest.logo_image;
+        img.style.display = 'block';
+        img.onerror = function() { this.style.display = 'none'; };
+    }
+    const brandSub = document.getElementById('brandSub');
+    brandSub.style.display = rest.show_name_in_header === false ? 'none' : 'block';
+    if (rest.show_name_in_header !== false) brandSub.textContent = rest.name ? ('✦ ' + rest.name) : '';
+    document.getElementById('heroTitle').textContent = rest.name || '';
+    document.getElementById('heroDesc').textContent = rest.description || '';
+}
+
+function renderCategories() {
+    const grid = document.getElementById('catsGrid');
+    document.getElementById('categoriesContainer').style.display = 'block';
+    document.getElementById('itemsContainer').style.display = 'none';
+    document.getElementById('backBtn').classList.remove('show');
+    document.getElementById('selectedCategoryName').style.display = 'none';
+    selectedCategory = null;
+    if (!categories.length) {
+        grid.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>لا توجد تصنيفات</div>';
+        return;
+    }
+    grid.innerHTML = categories.map((cat, idx) => {
+        const cd = dishes.filter(d => d.category_id == cat.id);
+        let is = '';
+        for (let d of cd) {
+            if (d.image && d.image.startsWith('http')) { is = d.image; break; }
+        }
+        return `<div class="cat-card" style="animation-delay:${idx*0.04}s" onclick="selectCategory(${cat.id},'${cat.name}')">
+            ${is ? `<img class="cat-img" src="${is}" loading="lazy">` : '<div class="cat-img-placeholder">📋</div>'}
+            <div class="cat-info"><div class="cat-name">${cat.name}</div><div class="cat-count">${cd.length} صنف</div></div>
+        </div>`;
+    }).join('');
+    document.getElementById('totalCount').textContent = dishes.length + ' صنف';
+}
+
+function selectCategory(catId, catName) {
+    const cat = categories.find(c => c.id == catId);
+    if (!cat) return;
+    selectedCategory = cat;
+    document.getElementById('categoriesContainer').style.display = 'none';
+    document.getElementById('itemsContainer').style.display = 'block';
+    document.getElementById('backBtn').classList.add('show');
+    document.getElementById('selectedCategoryName').style.display = 'block';
+    document.getElementById('selectedCategoryName').textContent = cat.name;
+    updateCatsBar();
+    renderDishesForCategory(cat.id);
+}
+
+function renderDishesForCategory(catId) {
+    const grid = document.getElementById('menuGrid');
+    let f = dishes.filter(d => d.category_id == catId);
+    if (!f.length) {
+        grid.innerHTML = '<div class="empty"><div class="empty-icon">🍽️</div>لا توجد أطباق</div>';
+        return;
+    }
+    grid.innerHTML = f.map((dish, idx) => `
+        <div class="card ${!dish.is_available?'off':''}" style="animation-delay:${idx*0.03}s">
+            <div class="card-img-wrap">
+                <img src="${dish.image || 'https://placehold.co/400x250/1a1a35/666'}" loading="lazy" onerror="this.src='https://placehold.co/400x250/1a1a35/666'">
+                <div class="card-badge ${dish.is_available?'badge-on':'badge-off'}">${dish.is_available?'متوفر':'غير متوفر'}</div>
+            </div>
+            <div class="card-body">
+                <h3>${dish.name}</h3>
+                <p>${dish.description || ''}</p>
+                <span class="price">${Number(dish.price).toLocaleString('ar-IQ')} د.ع</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+function goBackToCategories() {
+    document.getElementById('searchInput').value = '';
+    renderCategories();
+    updateCatsBar();
+}
+
+function updateCatsBar() {
+    document.getElementById('catsBar').innerHTML = ['الكل', ...categories.map(c => c.name)].map(c =>
+        `<button class="cat-bar-btn ${c === (selectedCategory ? selectedCategory.name : 'الكل') ? 'active' : ''}" onclick="selectCategoryFromBar('${c}')">${c}</button>`
+    ).join('');
+}
+
+function selectCategoryFromBar(name) {
+    if (name === 'الكل') goBackToCategories();
+    else {
+        const cat = categories.find(c => c.name === name);
+        if (cat) selectCategory(cat.id, cat.name);
+    }
+}
+
+function handleSearch() {
+    const query = document.getElementById('searchInput').value.trim().toLowerCase();
+    if (!query) { goBackToCategories(); return; }
+    const filtered = dishes.filter(d => d.name.toLowerCase().includes(query) || (d.description && d.description.toLowerCase().includes(query)));
+    if (filtered.length) {
+        document.getElementById('categoriesContainer').style.display = 'none';
+        document.getElementById('itemsContainer').style.display = 'block';
+        document.getElementById('backBtn').classList.add('show');
+        document.getElementById('selectedCategoryName').style.display = 'block';
+        document.getElementById('selectedCategoryName').textContent = 'نتائج البحث';
+        const grid = document.getElementById('menuGrid');
+        grid.innerHTML = filtered.map((dish, idx) => `
+            <div class="card ${!dish.is_available?'off':''}" style="animation-delay:${idx*0.03}s">
+                <div class="card-img-wrap">
+                    <img src="${dish.image || 'https://placehold.co/400x250/1a1a35/666'}" loading="lazy" onerror="this.src='https://placehold.co/400x250/1a1a35/666'">
+                    <div class="card-badge ${dish.is_available?'badge-on':'badge-off'}">${dish.is_available?'متوفر':'غير متوفر'}</div>
+                </div>
+                <div class="card-body">
+                    <h3>${dish.name}</h3>
+                    <p>${dish.description || ''}</p>
+                    <span class="price">${Number(dish.price).toLocaleString('ar-IQ')} د.ع</span>
+                </div>
+            </div>
+        `).join('');
+    } else {
+        document.getElementById('menuGrid').innerHTML = '<div class="empty"><div class="empty-icon">🔍</div>لا توجد نتائج</div>';
+    }
+}
+
+// ==================== DEV PANEL ====================
+async function loadAllRestaurants() {
+    try {
+        const data = await apiCall('/restaurants');
+        const list = document.getElementById('restaurantsList');
+        if (!data || !data.length) {
+            list.innerHTML = '<p style="text-align:center;color:var(--text2);padding:20px;">لا توجد مطاعم</p>';
+            return;
+        }
+        list.innerHTML = data.map(r => `
+            <div class="restaurant-item">
+                <div class="restaurant-info">
+                    <strong>${r.name}</strong>
+                    <span>${r.admin_email || ''} | ID:${r.id} | ${r.is_active ? '🟢 مفعل' : '🔴 معطل'}</span>
+                </div>
+                <div class="restaurant-actions">
+                    <button class="btn-xs toggle" onclick="toggleRestaurant(${r.id},${r.is_active})">${r.is_active ? '⏸️' : '▶️'}</button>
+                    <button class="btn-xs qr" onclick="openQrModal(${r.id},'${r.name.replace(/'/g, "\\'")}')">📱</button>
+                    <button class="btn-xs edit" onclick="openRestaurantModal(${r.id})">✏️</button>
+                    <button class="btn-xs delete" onclick="deleteRestaurant(${r.id})">🗑️</button>
+                </div>
+            </div>
+        `).join('');
+    } catch (err) {
+        document.getElementById('restaurantsList').innerHTML = '<p style="color:red;padding:20px;">❌ خطأ في تحميل المطاعم</p>';
+    }
+}
+
+async function toggleRestaurant(id, cs) {
+    if (!confirm(`متأكد من ${cs ? 'تعطيل' : 'تفعيل'} المطعم؟`)) return;
+    try {
+        await apiCall(`/restaurants/${id}`, { method: 'PUT', body: { is_active: !cs } });
+        delCache('menu_' + id);
+        toast(!cs ? '✅ مفعل' : '⏸️ معطل');
+        loadAllRestaurants();
+    } catch (err) {
+        alert('❌ ' + err.message);
+    }
+}
+
+async function loadRestaurantForEdit(id) {
+    try {
+        const data = await apiCall(`/restaurants/${id}`);
+        document.getElementById('restName').value = data.name || '';
+        document.getElementById('restLogoType').value = data.logo_type || 'text';
+        document.getElementById('restLogoText').value = data.logo_text || '';
+        document.getElementById('restAutoLogoText').value = data.auto_logo_text || '';
+        document.getElementById('restDesc').value = data.description || '';
+        document.getElementById('restAdminEmail').value = data.admin_email || '';
+        document.getElementById('restAdminPassword').value = data.admin_password || '';
+        document.getElementById('restShowNameInHeader').value = data.show_name_in_header === false ? 'false' : 'true';
+        toggleLogoFields();
+        document.getElementById('autoLogoPreview').textContent = (data.auto_logo_text || '?').slice(0,4);
+    } catch (err) {
+        toast('❌ فشل تحميل بيانات المطعم');
+    }
+}
+
+async function saveRestaurant() {
+    const id = document.getElementById('restaurantId').value;
+    const name = document.getElementById('restName').value.trim();
+    if (!name) {
+        document.getElementById('restaurantMsg').innerHTML = '<p class="err">⚠️ أدخل اسم المطعم</p>';
+        return;
+    }
+    
+    const rd = {
+        name,
+        logo_type: document.getElementById('restLogoType').value,
+        logo_text: document.getElementById('restLogoText').value.trim() || name,
+        auto_logo_text: document.getElementById('restAutoLogoText').value.trim().slice(0,4) || name.slice(0,4),
+        description: document.getElementById('restDesc').value.trim(),
+        admin_email: document.getElementById('restAdminEmail').value.trim(),
+        admin_password: document.getElementById('restAdminPassword').value,
+        show_name_in_header: document.getElementById('restShowNameInHeader').value === 'true',
+        is_active: true,
+        categories: [],
+        dishes: []
+    };
+    
+    try {
+        if (rd.logo_type === 'image') {
+            const lf = document.getElementById('restLogoFile').files[0];
+            if (lf) {
+                rd.logo_image = await uploadImage(lf);
+            }
+        }
+        
+        if (id) {
+            await apiCall(`/restaurants/${id}`, { method: 'PUT', body: rd });
+            delCache('menu_' + id);
+            toast('✅ تم التعديل');
+        } else {
+            await apiCall('/restaurants', { method: 'POST', body: rd });
+            toast('✅ تم الإضافة');
+        }
+        closeRestaurantModal();
+        loadAllRestaurants();
+    } catch (err) {
+        document.getElementById('restaurantMsg').innerHTML = '<p class="err">❌ ' + err.message + '</p>';
+    }
+}
+
+async function deleteRestaurant(id) {
+    if (!confirm('⚠️ حذف المطعم؟')) return;
+    try {
+        await apiCall(`/restaurants/${id}`, { method: 'DELETE' });
+        delCache('menu_' + id);
+        toast('🗑️ تم الحذف');
+        loadAllRestaurants();
+    } catch (err) {
+        alert('❌ ' + err.message);
+    }
+}
+
+// ==================== ADMIN PANEL ====================
+async function loadAdminData(restId) {
+    currentRestaurantId = restId;
+    try {
+        const restaurant = await apiCall(`/restaurants/${restId}`);
+        currentRestaurantData = restaurant;
+        document.getElementById('adminRestaurantName').textContent = restaurant.name;
+        categories = restaurant.categories || [];
+        dishes = restaurant.dishes || [];
+        renderAdminCatsBar();
+        renderAdminDishesList('all');
+    } catch (err) {
+        toast('❌ فشل تحميل بيانات المطعم');
+    }
+}
+
+function renderAdminCatsBar() {
+    document.getElementById('adminCatsBar').innerHTML = 
+        '<button class="cat-bar-btn active" onclick="filterAdminDishes(\'all\')">الكل</button>' +
+        categories.map(c => `<button class="cat-bar-btn" onclick="filterAdminDishes(${c.id})">${c.name}</button>`).join('');
+}
+
+function filterAdminDishes(catId) {
+    document.querySelectorAll('#adminCatsBar .cat-bar-btn').forEach(b => b.classList.remove('active'));
+    if (event && event.target) event.target.classList.add('active');
+    renderAdminDishesList(catId);
+}
+
+function renderAdminDishesList(catId) {
+    const container = document.getElementById('adminDishesList');
+    let f = dishes;
+    if (catId !== 'all') f = f.filter(d => d.category_id == catId);
+    if (!f.length) {
+        container.innerHTML = '<p style="text-align:center;color:var(--text2);padding:20px;">لا توجد أطباق</p>';
+        return;
+    }
+    container.innerHTML = f.map(d => `
+        <div class="dish-admin-item">
+            <img src="${d.image || 'https://placehold.co/40/333/666'}" loading="lazy" onerror="this.src='https://placehold.co/40/333/666'">
+            <div class="dish-admin-info">
+                <h4>${d.name}</h4>
+                <span>${(categories.find(c => c.id == d.category_id) || {}).name || ''} · ${d.is_available ? '✅' : '❌'}</span>
+            </div>
+            <div class="dish-admin-price">${Number(d.price).toLocaleString('ar-IQ')}</div>
+            <div class="dish-admin-actions">
+                <button class="btn-xs edit" onclick="openDishModal(${d.id})">✏️</button>
+                <button class="btn-xs delete" onclick="deleteDish(${d.id})">🗑️</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function saveDish() {
+    const id = document.getElementById('dishId').value;
+    const name = document.getElementById('dishName').value.trim();
+    const price = document.getElementById('dishPrice').value.trim();
+    if (!name || !price) {
+        document.getElementById('dishMsg').innerHTML = '<p class="err">⚠️ أدخل الاسم والسعر</p>';
+        return;
+    }
+    
+    try {
+        let img = '';
+        const file = document.getElementById('dishImage').files[0];
+        if (file) {
+            img = await uploadImage(file);
+        }
+        
+        const dd = {
+            name,
+            price: parseFloat(price),
+            category_id: document.getElementById('dishCategory').value || null,
+            description: document.getElementById('dishDesc').value.trim(),
+            is_available: document.getElementById('dishAvailable').value === 'true',
+            image: img
+        };
+        
+        const restaurant = await apiCall(`/restaurants/${currentRestaurantId}`);
+        let updatedDishes = restaurant.dishes || [];
+        
+        if (id) {
+            const idx = updatedDishes.findIndex(d => d.id == id);
+            if (idx !== -1) {
+                updatedDishes[idx] = { ...updatedDishes[idx], ...dd };
+            }
+        } else {
+            const newId = updatedDishes.length > 0 ? Math.max(...updatedDishes.map(d => d.id)) + 1 : 1;
+            updatedDishes.push({ ...dd, id: newId });
+        }
+        
+        await apiCall(`/restaurants/${currentRestaurantId}`, {
+            method: 'PUT',
+            body: { ...restaurant, dishes: updatedDishes }
+        });
+        
+        delCache('menu_' + currentRestaurantId);
+        toast(id ? '✅ تم التعديل' : '✅ تم الإضافة');
+        closeDishModal();
+        loadAdminData(currentRestaurantId);
+    } catch (err) {
+        document.getElementById('dishMsg').innerHTML = '<p class="err">❌ ' + err.message + '</p>';
+    }
+}
+
+async function deleteDish(id) {
+    if (!confirm('⚠️ حذف الطبق؟')) return;
+    try {
+        const restaurant = await apiCall(`/restaurants/${currentRestaurantId}`);
+        restaurant.dishes = (restaurant.dishes || []).filter(d => d.id != id);
+        await apiCall(`/restaurants/${currentRestaurantId}`, {
+            method: 'PUT',
+            body: restaurant
+        });
+        delCache('menu_' + currentRestaurantId);
+        toast('🗑️ تم الحذف');
+        loadAdminData(currentRestaurantId);
+    } catch (err) {
+        alert('❌ ' + err.message);
+    }
+}
+
+async function saveCategory() {
+    const name = document.getElementById('catName').value.trim();
+    if (!name) {
+        document.getElementById('catMsg').innerHTML = '<p class="err">⚠️ أدخل اسم التصنيف</p>';
+        return;
+    }
+    
+    try {
+        const restaurant = await apiCall(`/restaurants/${currentRestaurantId}`);
+        const categoriesList = restaurant.categories || [];
+        const newId = categoriesList.length > 0 ? Math.max(...categoriesList.map(c => c.id)) + 1 : 1;
+        categoriesList.push({ id: newId, name });
+        
+        await apiCall(`/restaurants/${currentRestaurantId}`, {
+            method: 'PUT',
+            body: { ...restaurant, categories: categoriesList }
+        });
+        
+        delCache('menu_' + currentRestaurantId);
+        closeCatModal();
+        toast('✅ تم الإضافة');
+        loadAdminData(currentRestaurantId);
+    } catch (err) {
+        document.getElementById('catMsg').innerHTML = '<p class="err">❌ ' + err.message + '</p>';
+    }
+}
+
+// ==================== INIT ====================
+async function init() {
+    checkSession();
+    await loadRestaurant();
+    if (isLoggedIn) {
+        setTimeout(() => {
+            if (loginType === 'dev') {
+                document.getElementById('devPanel').classList.add('show');
+                loadAllRestaurants();
+            } else if (loginType === 'admin') {
+                document.getElementById('adminPanel').classList.add('show');
+                loadAdminData(currentRestaurantId);
+            }
+        }, 500);
+    }
+}
+
+init();
+</script>
+</body>
+</html>
