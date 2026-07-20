@@ -8,8 +8,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
+        /* كل الأنماط موجودة هنا - تم اختصارها للتوفير */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
         :root {
             --bg: #0a0a14;
             --surface: rgba(255,255,255,0.04);
@@ -27,7 +27,6 @@
             --gradient-fire: linear-gradient(180deg, #f1a9a0 0%, #e66767 35%, #c44569 65%, #a33d5a 100%);
             --font-ar: 'Cairo', sans-serif;
         }
-        
         .light-mode {
             --bg: #fafafa;
             --surface: rgba(0,0,0,0.02);
@@ -36,22 +35,9 @@
             --text: #2d2d3a;
             --text2: #8e8ea0;
         }
-        
-        body {
-            font-family: var(--font-ar);
-            background: var(--bg);
-            color: var(--text);
-            padding: 12px;
-            min-height: 100vh;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        button, input, select, textarea, .btn, .btn-full, .btn-xs, .btn-icon, .cat-bar-btn, .form-input {
-            font-family: var(--font-ar) !important;
-        }
-
+        body { font-family: var(--font-ar); background: var(--bg); color: var(--text); padding: 12px; min-height: 100vh; transition: background 0.3s, color 0.3s; }
+        button, input, select, textarea, .btn, .btn-full, .btn-xs, .btn-icon, .cat-bar-btn, .form-input { font-family: var(--font-ar) !important; }
         .container { max-width: 800px; margin: 0 auto; }
-
         .header { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 12px; border-bottom: 1px solid var(--border); }
         .brand { display: flex; align-items: center; gap: 10px; }
         .brand-auto-logo { width: 44px; height: 44px; border-radius: 12px; background: var(--gradient-fire); display: none; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; color: #fff; box-shadow: 0 4px 15px rgba(196, 69, 105, 0.3); flex-shrink: 0; }
@@ -63,32 +49,26 @@
         .btn-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .btn-icon:hover { border-color: var(--accent-soft); color: var(--accent); }
         .btn-icon:active { transform: scale(0.92); }
-
         .hero { text-align: center; padding: 20px 10px 8px; }
         .hero-badge { display: inline-block; padding: 4px 14px; border-radius: 50px; background: var(--surface); border: 1px solid var(--border); font-size: 10px; font-weight: 600; color: var(--accent-soft); margin-bottom: 8px; letter-spacing: 1px; }
         .hero h1 { font-size: clamp(32px, 8vw, 52px); font-weight: 900; line-height: 1.3; font-family: var(--font-ar); margin-bottom: 10px; word-break: break-word; padding: 6px 8px 12px 8px; }
         .hero h1 .menu-text { background: var(--gradient-fire); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: inline-block; filter: drop-shadow(0 0 12px rgba(207, 106, 135, 0.15)); animation: softGlow 3s ease-in-out infinite; }
         @keyframes softGlow { 0%, 100% { filter: drop-shadow(0 0 8px rgba(207, 106, 135, 0.1)); } 50% { filter: drop-shadow(0 0 15px rgba(207, 106, 135, 0.2)); } }
         .hero p { font-size: clamp(14px, 3vw, 18px); color: var(--primary-soft); font-weight: 500; max-width: 450px; margin: 8px auto 0; }
-
         .search-wrapper { margin: 10px 0 8px; position: relative; }
         .search { width: 100%; padding: 12px 16px 12px 44px; border-radius: 50px; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 14px; font-family: inherit; outline: none; }
         .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text2); font-size: 16px; opacity: 0.5; }
-
         .cats-bar-wrapper { overflow-x: auto; scrollbar-width: none; margin: 6px 0 12px; }
         .cats-bar-wrapper::-webkit-scrollbar { display: none; }
         .cats-bar { display: flex; gap: 8px; flex-wrap: nowrap; }
         .cat-bar-btn { padding: 6px 16px; border-radius: 50px; background: var(--surface); border: 1px solid var(--border); color: var(--text2); font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; min-height: 36px; flex-shrink: 0; }
         .cat-bar-btn:hover { border-color: var(--accent-soft); color: var(--accent-soft); }
         .cat-bar-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-
         .back-btn { display: none; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); color: var(--accent-soft); padding: 8px 16px; border-radius: 50px; cursor: pointer; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
         .back-btn.show { display: inline-flex; }
-
         .section-title { font-size: 18px; font-weight: 700; margin: 8px 0 14px; color: var(--text); display: flex; align-items: center; gap: 8px; }
         .count-badge { font-size: 12px; font-weight: 600; color: var(--accent-soft); background: rgba(207, 106, 135, 0.08); padding: 2px 12px; border-radius: 50px; }
         .category-title { font-size: 20px; font-weight: 700; margin: 4px 0 12px; color: var(--text); }
-
         .cats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .cat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: 0.3s; animation: fadeUp 0.3s ease forwards; opacity: 0; }
         .cat-card:hover { border-color: rgba(207, 106, 135, 0.2); transform: translateY(-2px); }
@@ -98,7 +78,6 @@
         .cat-card .cat-info { padding: 12px 14px; }
         .cat-card .cat-name { font-size: 16px; font-weight: 700; }
         .cat-card .cat-count { font-size: 12px; color: var(--text2); }
-
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: 0.2s; animation: fadeUp 0.3s ease forwards; opacity: 0; }
         .card:hover { border-color: rgba(207, 106, 135, 0.15); }
@@ -112,7 +91,6 @@
         .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
         .card p { font-size: 11px; color: var(--text2); margin-bottom: 6px; }
         .price { font-size: 18px; font-weight: 800; color: var(--accent-soft); }
-
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; padding: 16px; }
         .modal-overlay.show { display: flex; }
         .modal-box { background: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 24px 20px; width: 100%; max-width: 450px; max-height: 90vh; overflow-y: auto; animation: popIn 0.3s ease; }
@@ -124,7 +102,6 @@
         .form-input:focus { border-color: var(--accent-soft); }
         textarea.form-input { min-height: 60px; resize: vertical; }
         select.form-input { cursor: pointer; }
-
         .btn { padding: 10px 20px; border-radius: 10px; border: none; font-weight: 700; font-size: 14px; cursor: pointer; min-height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
         .btn:hover { opacity: 0.85; }
         .btn-full { width: 100%; padding: 12px; border-radius: 12px; }
@@ -133,7 +110,6 @@
         .btn-danger { background: #e66767; color: white; }
         .btn-outline { background: var(--surface); color: var(--text2); border: 1px solid var(--border); }
         .btn-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-
         .admin-panel { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 999; overflow-y: auto; padding: 12px; }
         .admin-panel.show { display: block; }
         .admin-wrap { max-width: 800px; margin: 0 auto; }
@@ -142,41 +118,34 @@
         .admin-bar .admin-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
         .admin-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
         .admin-card h4 { font-size: 14px; margin-bottom: 12px; }
-
         .restaurant-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border); gap: 8px; }
         .restaurant-info { flex: 1; }
         .restaurant-info strong { font-size: 14px; }
         .restaurant-info span { font-size: 10px; color: var(--text2); display: block; }
         .restaurant-actions { display: flex; gap: 4px; }
-
         .btn-xs { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--text2); }
         .btn-xs:hover { border-color: var(--accent-soft); color: var(--accent-soft); }
         .btn-xs.edit { color: var(--accent-soft); }
         .btn-xs.delete { color: #e66767; }
         .btn-xs.qr { color: #10b981; }
         .btn-xs.toggle { color: #f59e0b; }
-
         .dish-admin-item { display: grid; grid-template-columns: 40px 1fr 60px 70px; gap: 6px; padding: 8px 10px; align-items: center; border-bottom: 1px solid var(--border); }
         .dish-admin-item img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; background: var(--surface2); }
         .dish-admin-info h4 { font-size: 12px; font-weight: 600; }
         .dish-admin-info span { font-size: 9px; color: var(--text2); }
         .dish-admin-price { font-size: 12px; font-weight: 700; color: var(--accent-soft); }
         .dish-admin-actions { display: flex; gap: 3px; }
-
         .disabled-page { display: none; text-align: center; padding: 80px 20px; max-width: 500px; margin: 0 auto; animation: fadeUp 0.5s ease; }
         .disabled-icon svg { width: 100px; height: 100px; animation: lockPulse 2s ease-in-out infinite; }
         @keyframes lockPulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.08); opacity: 1; } }
         .disabled-page h2 { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
         .disabled-page p { color: var(--text2); font-size: 14px; line-height: 1.6; }
-
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface); border: 1px solid rgba(207, 106, 135, 0.2); padding: 10px 20px; border-radius: 50px; z-index: 2000; font-size: 13px; font-weight: 600; color: var(--text); transition: transform 0.4s ease; pointer-events: none; max-width: 90%; text-align: center; }
         .toast.on { transform: translateX(-50%) translateY(0); }
-
         @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
         .empty { text-align: center; padding: 40px 20px; color: var(--text2); grid-column: 1 / -1; }
         .empty-icon { font-size: 40px; margin-bottom: 8px; }
         .err { color: #e66767; font-size: 13px; display: block; text-align: center; margin-top: 8px; }
-
         @media (max-width: 400px) {
             .grid { gap: 8px; } .card-img-wrap { height: 110px; } .card h3 { font-size: 13px; } .price { font-size: 15px; }
             .brand-text-en { font-size: 20px; } .btn-icon { width: 38px; height: 38px; } .btn-icon svg { width: 18px; height: 18px; }
@@ -242,8 +211,9 @@
 
 <script>
 // ==================== CONFIG ====================
-const GITHUB_TOKEN = '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';
-const REPO_OWNER = 'Murtada-Abbas';
+// تم تحديث التوكن والاسم
+const GITHUB_TOKEN = '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';
+const REPO_OWNER = 'eervnxx';
 const REPO_NAME = 'menu-app';
 const BRANCH = 'main';
 const BASE_PATH = 'data';
