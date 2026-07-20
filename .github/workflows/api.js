@@ -10,8 +10,8 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
-// GitHub config - التوكن من GitHub Secrets
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+// GitHub config - استخدام MY_GITHUB_TOKEN بدلاً من GITHUB_TOKEN
+const GITHUB_TOKEN = process.env.MY_GITHUB_TOKEN;
 const REPO_OWNER = process.env.GITHUB_REPOSITORY ? process.env.GITHUB_REPOSITORY.split('/')[0] : 'YOUR_USERNAME';
 const REPO_NAME = process.env.GITHUB_REPOSITORY ? process.env.GITHUB_REPOSITORY.split('/')[1] : 'YOUR_REPO';
 const BRANCH = 'main';
@@ -167,26 +167,19 @@ app.delete('/api/restaurants/:id', async (req, res) => {
 
 app.post('/api/upload', async (req, res) => {
     try {
-        // قراءة الملف من FormData
-        const formData = new FormData();
-        // في GitHub Actions، نستخدم multer أو نستقبل الملف مباشرة
-        // لكن بما أننا في بيئة محدودة، سنستخدم base64
-        
         const { image } = req.body;
         if (!image) {
             return res.status(400).json({ error: 'No image provided' });
         }
         
-        // تحويل base64 إلى Blob
         const base64Data = image.split(',')[1] || image;
         const buffer = Buffer.from(base64Data, 'base64');
         
-        // إرسال إلى ImgBB
-        const imgbbFormData = new FormData();
+        const formData = new FormData();
         const blob = new Blob([buffer], { type: 'image/jpeg' });
-        imgbbFormData.append('image', blob, 'image.jpg');
+        formData.append('image', blob, 'image.jpg');
         
-        const response = await axios.post('https://api.imgbb.com/1/upload?key=da3f49b21529668b440b1a7ac820fecf', imgbbFormData, {
+        const response = await axios.post('https://api.imgbb.com/1/upload?key=da3f49b21529668b440b1a7ac820fecf', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -202,7 +195,6 @@ app.post('/api/upload', async (req, res) => {
     }
 });
 
-// بدء السيرفر
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 API Server running on port ${PORT}`);
     console.log(`📁 Repo: ${REPO_OWNER}/${REPO_NAME}`);
